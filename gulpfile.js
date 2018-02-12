@@ -39,14 +39,19 @@ gulp.task('images', function() {
     .pipe(gulp.dest(final));
 });
 
-// Run git commit with options
 gulp.task('commit', function() {
   return gulp.src('source/**')
     .pipe(git.add())
-    .pipe(git.commit('Initial Commit'));
+    .pipe(git.commit('task: Add git-push to gulpfile'));
+    git.push('origin', function (err) {
+        if (err) throw err;
+    });
 });
 
+gulp.task('all-but-commit', 
+    ['minify-css', 'compress', 'minify', 'images']
+);
 
-gulp.task('default', function(message) {
-    ['minify-css', 'compress', 'minify', 'images', 'commit'];
-});
+gulp.task('default', 
+    ['minify-css', 'compress', 'minify', 'images', 'commit']
+);

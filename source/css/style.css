@@ -1,3 +1,33 @@
-img {
-    width: 100vw;
+.cat-pic {
+    display: block;
+    width: auto;
+}
+
+.cat-box {
+    display: block;
+}
+
+.reward {
+    width: auto;
+    padding-top: auto;
+    border-radius: 50%;
+    background-color: crimson;
+    position: inline;
+ /*   left: 70vw;
+    bottom: 10vw; */
+    display: none;
+    font-size: 3em;
+    color: white;
+    padding: 20px;
+    text-align: center;
+}
+
+h1 {
+    font-family: inherit;
+    font-size: 40px;
+}
+
+div {
+    display: block;
+    clear: both:
 }
