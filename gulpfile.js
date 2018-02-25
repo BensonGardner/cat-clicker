@@ -42,7 +42,7 @@ gulp.task('images', function() {
 gulp.task('commit', function() {
   return gulp.src('source/**')
     .pipe(git.add())
-    .pipe(git.commit('task: Add git-push to gulpfile'));
+    .pipe(git.commit('task: Update dist files'));
     git.push('origin', function (err) {
         if (err) throw err;
     });
