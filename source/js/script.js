@@ -13,20 +13,21 @@ var Cat = function(name, picture) {
     this.name = name.replace(/(?:^|\s)\w/g, function(match) {
         return match.toUpperCase();
     });
+    
     var nameHTML = '<div class="cat-name"><h2>' + this.name +
             '</h2></div>',
         
-        rewardHTML = '<div class="reward" id="show-' + this.name + 
+        rewardHTML = '<div class="reward" id="' + this.name + 
             '-reward"><span id="' + this.name + 
             '-reward-text">' + this.clicks + '</span></div>', 
         
-        picHTML = '<div class="cat-pic" id="show-' + this.name + '-pic"><img alt="cat" src="' + 
+        picHTML = '<div class="cat-pic" id="' + this.name + '-pic"><img alt="cat" src="' + 
             picture + '"></div>',
         
-        menuHTML = '<a class="menu-link" href="#" id="show-' + this.name + '">' + this.name + '</a></br>';
+        menuHTML = '<a class="menu-link" href="#" id="' + this.name + '">' + this.name + '</a></br>';
     
-    clickZone.append('<div class="cat-box" id="box-show-' + this.name + '">' + nameHTML + picHTML + rewardHTML);
-    
+    clickZone.append('<div class="cat-box" id="box-' + 
+        this.name + '">' + nameHTML + picHTML + rewardHTML);
     cats.push(this);
     $('#navigation').append(menuHTML);
 };
@@ -48,14 +49,14 @@ var jen = new Cat('jennifer', 'images/kitten-autumn-500.jpg'),
 // that the menu brings up.
 for (i = 0; i < cats.length; i++) {
     (function(i) {
-        var catCircle = document.getElementById('show-' + 
-            cats[i].name + '-reward');
-        $('#show-' + cats[i].name).click(function() {
+        var catCircle = document.getElementById(cats[i].name + 
+            '-reward');
+        $('#' + this.name + '-pic').click(function() {
+            cats[i].count.call(cats[i], catCircle);
+        });
+        $('#' + cats[i].name).click(function() {
             $('.cat-box').css('display', 'none');
             $('#box-' + this.id).css('display', 'inline');
-            $('#' + this.id + '-pic').click(function() {
-                cats[i].count.call(cats[i], catCircle);
-            });
         })
     }).call(cats[i], i);
 }
