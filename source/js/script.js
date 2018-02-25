@@ -24,7 +24,7 @@ var Cat = function(name, picture) {
         picHTML = '<div class="cat-pic" id="' + this.name + '-pic"><img alt="cat" src="' + 
             picture + '"></div>',
         
-        menuHTML = '<a class="menu-link" href="#" id="' + this.name + '">' + this.name + '</a></br>';
+        menuHTML = '<a class="menu-link" href="#" id="' + this.name + '">' + this.name + '</a></br></br>';
     
     clickZone.append('<div class="cat-box" id="box-' + 
         this.name + '">' + nameHTML + picHTML + rewardHTML);
@@ -42,7 +42,10 @@ Cat.prototype.count = function(circle) {
 };
 
 var jen = new Cat('jennifer', 'images/kitten-autumn-500.jpg'),
-    mark = new Cat('Mark', 'images/cat-grey-500.jpg');
+    mark = new Cat('Mark', 'images/cat-grey-500.jpg'),
+    deShawn = new Cat('deShawn', 'images/cat-sleeping.jpg'),
+    edmunda = new Cat('edmunda', 'images/cat-with-pita.jpg'),
+    steve = new Cat('steve-O', 'images/cat-hairless.jpg');
 
 // Add the click-to-select functionality to the menu,
 // and the click-to-count functionality to the cat pictures
