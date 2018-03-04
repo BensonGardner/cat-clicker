@@ -42,8 +42,8 @@ gulp.task('images', function() {
 gulp.task('commit', function() {
   return gulp.src('source/**')
     .pipe(git.add())
-    .pipe(git.commit('task: Update dist files'));
-    git.push('origin', function (err) {
+    .pipe(git.commit('reconfig: Change to MVO setup'));
+    git.push('', function (err) {
         if (err) throw err;
     });
 });
