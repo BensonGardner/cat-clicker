@@ -1,65 +1,131 @@
-var clickZone = $('#clickZone'),
-    cats = [];
+// This is our data model.
+var cats = [
+    {
+        name: 'Jennifer',
+        pic:  'images/kitten-autumn-500.jpg',
+    }, 
+    {
+        name: 'Mark',
+        pic: 'images/cat-grey-500.jpg'
+    },
+    { 
+        name: 'deShawn',
+        pic: 'images/cat-sleeping.jpg'
+    },
+    {
+        name: 'Steve-O',
+        pic: 'images/cat-hairless.jpg'      
+    },
+    {
+        name: 'Akhila',
+        pic: 'images/cat-with-pita.jpg'
+    }
+];
 
-// Cat constructor. This creates a 
-// cat object and pushes it into the main
-// area of the page. It also creates a menu
-// link.
-// The Title case method was found at 
-// https://stackoverflow.com/questions/5086390/jquery-title-case
 
-var Cat = function(name, picture) {
-    this.clicks = 0;
-    this.name = name.replace(/(?:^|\s)\w/g, function(match) {
-        return match.toUpperCase();
-    });
+// This is our "octopus"/controller/whatever.
+var octopus = {
+		
+  	currentCat: '',  
+  
+    // octopus.init() sets everything up. It adds a 
+    // count property to each of the cats in the data array,
+    // and then sends the data model to the view object to 
+    // create the view.
+    init: function() {
+        for (i = 0; i < cats.length; i++) {
+            cats[i].count = 0;
+        }
+        console.log(cats);
+        view.menu.init(cats);
+        view.featured.init();
+    },
+
+    // octopus.select(cat) is called by the view when a cat
+    // is selected. Octopus.select(cat) sets currentCat 
+    // to that piece of the data model which was selected 
+    // in the view, then tags the view object to change 
+    // the main display and the menu styling.
+    select: function(cat) {
+        console.log(cat + " is da cat");
+        octopus.currentCat = cat;
+        view.featured.display(octopus.currentCat);
+        view.menu.highlight(octopus.currentCat);
+    },
     
-    var nameHTML = '<div class="cat-name"><h2>' + this.name +
-            '</h2></div>',
-        
-        rewardHTML = '<div class="reward" id="' + this.name + 
-            '-reward"><span id="' + this.name + 
-            '-reward-text">' + this.clicks + '</span></div>', 
-        
-        picHTML = '<div class="cat-pic" id="' + this.name + '-pic"><img alt="cat" src="' + 
-            picture + '"></div>',
-        
-        menuHTML = '<a class="menu-link" href="#" id="' + this.name + '">' + this.name + '</a></br></br>';
+    // Increase count for the selected cat if clicked.
+    // incrementClicks() is called by an event listener
+    // which is inserted by the view. Make the circle
+    // for the clicking show up.
+    incrementClicks: function() {
+        octopus.currentCat.count++;
+        console.log(octopus.currentCat.count);
+        view.featured.displayNewCount();
+    }
     
-    clickZone.append('<div class="cat-box" id="box-' + 
-        this.name + '">' + nameHTML + picHTML + rewardHTML);
-    cats.push(this);
-    $('#navigation').append(menuHTML);
 };
 
-// Add the count function. It takes each cat's
-// circle as an argument, then increments the 
-// count when it is clicked.
-Cat.prototype.count = function(circle) {
-    this.clicks++;
-    circle.style.display = 'inline';
-    circle.innerHTML = '<span id="' + this.name + '-reward-text">' +    this.clicks + '</span>';
+
+var view = {
+
+// featured is the main area of the website
+    featured : {
+ 
+        // featured.display is called
+        // to display a particular cat's 
+        // name, pic, and click count.
+        display: function(cat) {
+            $('.cat-box').css('display', 'inline');
+            $('.cat-name').text = cat.name;
+            $('.cat-pic').attr('src', cat.pic);
+            $('.reward').text(cat.count);
+        },
+        
+        // featured.init puts an event listener on the div
+        // containing the cat pic, to increment the current cat's
+        // click count.
+        init: function() {
+            $('.cat-pic').click(octopus.incrementClicks);
+        },
+
+        displayNewCount: function() {
+            var cat = octopus.currentCat;
+            console.log(cat);
+            console.log(cat.count);
+            $('.reward').text(cat.count);
+        }
+        
+    },
+    
+    
+// menu is the list of cats
+    menu: {
+      
+        // Change styling when a cat is selected
+        highlight: function(currentCat) {
+            // later do this
+        },
+        
+        init: function(cats) {
+            console.log(cats);
+            for (i = 0; i < cats.length; i++) {
+                console.log(cats[i]);
+                var menuHTML = '<span class="menu-link" id="' +
+                    i + '"><a href="#">' + cats[i].name + '</a><br><br></span>';
+                
+                $('#navigation').append(menuHTML);
+                
+                // Put the event listener on the menu links to select
+                // desired cat. Using .call() because we need to pass an argument to the select function
+                $('#' + i).click(function() {
+                    console.log(Number(this.id));
+                    console.log(cats[Number(this.id)]);
+                    octopus.select.call(octopus, cats[Number(this.id)]);
+                });
+            }
+        }
+    }                                             
 };
-
-var jen = new Cat('jennifer', 'images/kitten-autumn-500.jpg'),
-    mark = new Cat('Mark', 'images/cat-grey-500.jpg'),
-    deShawn = new Cat('deShawn', 'images/cat-sleeping.jpg'),
-    edmunda = new Cat('edmunda', 'images/cat-with-pita.jpg'),
-    steve = new Cat('steve-O', 'images/cat-hairless.jpg');
-
-// Add the click-to-select functionality to the menu,
-// and the click-to-count functionality to the cat pictures
-// that the menu brings up.
-for (i = 0; i < cats.length; i++) {
-    (function(i) {
-        var catCircle = document.getElementById(cats[i].name + 
-            '-reward');
-        $('#' + this.name + '-pic').click(function() {
-            cats[i].count.call(cats[i], catCircle);
-        });
-        $('#' + cats[i].name).click(function() {
-            $('.cat-box').css('display', 'none');
-            $('#box-' + this.id).css('display', 'inline');
-        })
-    }).call(cats[i], i);
-}
+                                             
+octopus.init();                                      
+        
