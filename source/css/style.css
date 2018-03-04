@@ -39,9 +39,10 @@ body {
     list-style: none;
 }
 
-.menu-link {
+li {
     margin: auto;
     padding: 0 auto;
+    list-style-type: none;
 }
 
 #clickZone {

@@ -36,7 +36,6 @@ var octopus = {
         for (i = 0; i < cats.length; i++) {
             cats[i].count = 0;
         }
-        console.log(cats);
         view.menu.init(cats);
         view.featured.init();
     },
@@ -44,13 +43,11 @@ var octopus = {
     // octopus.select(cat) is called by the view when a cat
     // is selected. Octopus.select(cat) sets currentCat 
     // to that piece of the data model which was selected 
-    // in the view, then tags the view object to change 
-    // the main display and the menu styling.
+    // in the view, then tags the view object to update 
+    // the main display.
     select: function(cat) {
-        console.log(cat + " is da cat");
         octopus.currentCat = cat;
         view.featured.display(octopus.currentCat);
-        view.menu.highlight(octopus.currentCat);
     },
     
     // Increase count for the selected cat if clicked.
@@ -59,7 +56,6 @@ var octopus = {
     // for the clicking show up.
     incrementClicks: function() {
         octopus.currentCat.count++;
-        console.log(octopus.currentCat.count);
         view.featured.displayNewCount();
     }
     
@@ -76,7 +72,7 @@ var view = {
         // name, pic, and click count.
         display: function(cat) {
             $('.cat-box').css('display', 'inline');
-            $('.cat-name').text = cat.name;
+            $('.cat-name').text(cat.name);
             $('.cat-pic').attr('src', cat.pic);
             $('.reward').text(cat.count);
         },
@@ -90,8 +86,6 @@ var view = {
 
         displayNewCount: function() {
             var cat = octopus.currentCat;
-            console.log(cat);
-            console.log(cat.count);
             $('.reward').text(cat.count);
         }
         
@@ -100,26 +94,17 @@ var view = {
     
 // menu is the list of cats
     menu: {
-      
-        // Change styling when a cat is selected
-        highlight: function(currentCat) {
-            // later do this
-        },
         
         init: function(cats) {
-            console.log(cats);
             for (i = 0; i < cats.length; i++) {
-                console.log(cats[i]);
-                var menuHTML = '<span class="menu-link" id="' +
-                    i + '"><a href="#">' + cats[i].name + '</a><br><br></span>';
+                var menuHTML = '<li id="' +
+                    i + '"><a href="#">' + cats[i].name + '</a><br><br></li>';
                 
                 $('#navigation').append(menuHTML);
                 
                 // Put the event listener on the menu links to select
                 // desired cat. Using .call() because we need to pass an argument to the select function
                 $('#' + i).click(function() {
-                    console.log(Number(this.id));
-                    console.log(cats[Number(this.id)]);
                     octopus.select.call(octopus, cats[Number(this.id)]);
                 });
             }
