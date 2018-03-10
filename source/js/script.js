@@ -31,7 +31,7 @@ var data = {
 // This is our "octopus"/controller/whatever.
 var octopus = {
 		
-  	 currentCat: '',  
+    currentCat: '',  
   
     // octopus.init() sets everything up. It adds a 
     // count property to each of the cats in the data array,
@@ -40,6 +40,7 @@ var octopus = {
     init: function() {
         for (i = 0; i < data.cats.length; i++) {
             data.cats[i].count = 0;
+            data.cats[i].id = i;
         }
         view.menu.init(data.cats);
         view.featured.init();
@@ -51,9 +52,10 @@ var octopus = {
     // to that piece of the data model which was selected 
     // in the view, then tags the view object to update 
     // the main display.
-    select: function(cat) {
-        octopus.currentCat = cat;
+    select: function(catIndex) {
+        octopus.currentCat = data.cats[catIndex];
         view.featured.display(octopus.currentCat);
+        octopus.currentCat.id = catIndex;
     },
     
     // Increase count for the selected cat if clicked.
@@ -84,16 +86,21 @@ var octopus = {
     },
         
     alterCat: function() {
-        // This function should be called by the view (form)
-        // when Save is clicked, and then will send that data
-        // to the model.
+        // This function is called by the view (form)
+        // when Save is clicked. It takes data from the form
+        // into the octopus, then takes that same data in the 
+        // octopus and pushes it into the data model. It uses
+        // the currentCat.id to figure out which part of the 
+        // cats.data array to alter.
         
-        var FD = new FormData(form);
-        console.log("hi");
-        octopus.currentCat.name = FD.name-input;
-        
-        
-        
+        var inputForm = $('#adminPanelForm'),
+            inputFormData = inputForm[0];
+        octopus.currentCat.name = inputFormData[0].value;
+        octopus.currentCat.pic = inputFormData[1].value;
+        octopus.currentCat.count = inputFormData[2].value;        
+        data.cats[octopus.currentCat.id] = octopus.currentCat;
+        view.featured.display(octopus.currentCat);
+        octopus.toggleAdmin();
     }
     
 };
@@ -148,7 +155,7 @@ var view = {
                 // Put the event listener on the menu links to select
                 // desired cat. Using .call() because we need to pass an argument to the select function
                 $('#' + i).click(function() {
-                    octopus.select.call(octopus, cats[Number(this.id)]);
+                    octopus.select.call(octopus, this.id);
                 });
             }
         }
@@ -169,8 +176,8 @@ var view = {
             var adminPanel = document.createElement('form');
             $(adminPanel).css('class', 'panel');
             $('#admin').append(adminPanel);
-            var formElement = document.createElement('form');
-            formElement.method = 'POST';
+        //    $(adminPanel).attr('method','POST');
+            $(adminPanel).attr('id', 'adminPanelForm');
             var labels = document.createElement('div');
             $(labels).css('class', 'labels');
             var inputs = document.createElement('input');
@@ -182,9 +189,10 @@ var view = {
                 picField = '<input type="text" value=' + octopus.currentCat.pic + ' id="pic-input" name="pic-input">',
                 countLabel = '<label for="count-input">Count</label>',
                 countField = '<input type="text" id="count-input" value=' + octopus.currentCat.count + ' name="count-input">',
-                saveButton = '<input type="submit" value="Save">';
+                saveButton = '<button id="saveButton" type="button" name="save-button">Save</button>';
             $(adminPanel).append(nameLabel + nameField + picLabel + picField + countLabel + countField + saveButton);
-            $(saveButton).click(octopus.alterCat);
+            console.log(saveButton);
+            $('#saveButton').click(octopus.alterCat);
           
             
             // Show the panel ...
