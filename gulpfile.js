@@ -42,7 +42,7 @@ gulp.task('images', function() {
 gulp.task('commit', function() {
   return gulp.src('source/**')
     .pipe(git.add())
-    .pipe(git.commit('reconfig: Change to MVO setup'));
+    .pipe(git.commit('reconfig: Add Admin Panel'));
     git.push('', function (err) {
         if (err) throw err;
     });

@@ -1,56 +1,59 @@
 // This is our data model.
-var cats = [
-    {
-        name: 'Jennifer',
-        pic:  'images/kitten-autumn-500.jpg',
-    }, 
-    {
-        name: 'Mark',
-        pic: 'images/cat-grey-500.jpg'
-    },
-    { 
-        name: 'deShawn',
-        pic: 'images/cat-sleeping.jpg'
-    },
-    {
-        name: 'Steve-O',
-        pic: 'images/cat-hairless.jpg'      
-    },
-    {
-        name: 'Akhila',
-        pic: 'images/cat-with-pita.jpg'
-    }
-];
+var data = {
+    
+    cats : [
+        {
+            name: 'Jennifer',
+            pic:  'images/kitten-autumn-500.jpg',
+        }, 
+        {
+            name: 'Mark',
+            pic: 'images/cat-grey-500.jpg'
+        },
+        { 
+            name: 'deShawn',
+            pic: 'images/cat-sleeping.jpg'
+        },
+        {
+            name: 'Steve-O',
+            pic: 'images/cat-hairless.jpg'      
+        },
+        {
+            name: 'Akhila',
+            pic: 'images/cat-with-pita.jpg'
+        }
+    ],
+    
+    adminShow : false
+}
 
 
 // This is our "octopus"/controller/whatever.
 var octopus = {
 		
-  	currentCat: '',  
+  	 currentCat: '',  
   
     // octopus.init() sets everything up. It adds a 
     // count property to each of the cats in the data array,
     // and then sends the data model to the view object to 
     // create the view.
     init: function() {
-        for (i = 0; i < cats.length; i++) {
-            cats[i].count = 0;
+        for (i = 0; i < data.cats.length; i++) {
+            data.cats[i].count = 0;
         }
-        console.log(cats);
-        view.menu.init(cats);
+        view.menu.init(data.cats);
         view.featured.init();
+        view.admin.init();
     },
 
     // octopus.select(cat) is called by the view when a cat
     // is selected. Octopus.select(cat) sets currentCat 
     // to that piece of the data model which was selected 
-    // in the view, then tags the view object to change 
-    // the main display and the menu styling.
+    // in the view, then tags the view object to update 
+    // the main display.
     select: function(cat) {
-        console.log(cat + " is da cat");
         octopus.currentCat = cat;
         view.featured.display(octopus.currentCat);
-        view.menu.highlight(octopus.currentCat);
     },
     
     // Increase count for the selected cat if clicked.
@@ -59,8 +62,38 @@ var octopus = {
     // for the clicking show up.
     incrementClicks: function() {
         octopus.currentCat.count++;
-        console.log(octopus.currentCat.count);
         view.featured.displayNewCount();
+    },
+    
+    toggleAdmin: function() {
+        data.adminShow = !data.adminShow;
+        view.admin.toggleAdminView();
+        if (data.adminShow = true) {
+            // update the form values. 
+            // Another way to handle this...
+            // Have this call a separate octopus function that
+            // sends the current cat data to the view 
+            // for rerendering the form. or just 
+            // changing the values. 
+            // pAss it a cat object, then update each 
+            // value in turn.
+            
+            // Or, instead o fcalling tha there, jus thave it happen 
+            // every single time you choose a cat.
+        }
+    },
+        
+    alterCat: function() {
+        // This function should be called by the view (form)
+        // when Save is clicked, and then will send that data
+        // to the model.
+        
+        var FD = new FormData(form);
+        console.log("hi");
+        octopus.currentCat.name = FD.name-input;
+        
+        
+        
     }
     
 };
@@ -76,9 +109,14 @@ var view = {
         // name, pic, and click count.
         display: function(cat) {
             $('.cat-box').css('display', 'inline');
-            $('.cat-name').text = cat.name;
+            $('.cat-name').text(cat.name);
             $('.cat-pic').attr('src', cat.pic);
             $('.reward').text(cat.count);
+            
+            // Update the values for the input form
+            $('#name-input').attr('value', cat.name);
+            $('#pic-input').attr('value', cat.pic);
+            $('#count-input').attr('value', cat.count);
         },
         
         // featured.init puts an event listener on the div
@@ -90,9 +128,8 @@ var view = {
 
         displayNewCount: function() {
             var cat = octopus.currentCat;
-            console.log(cat);
-            console.log(cat.count);
             $('.reward').text(cat.count);
+            $('#count-input').attr('value', cat.count);
         }
         
     },
@@ -100,31 +137,72 @@ var view = {
     
 // menu is the list of cats
     menu: {
-      
-        // Change styling when a cat is selected
-        highlight: function(currentCat) {
-            // later do this
-        },
         
         init: function(cats) {
-            console.log(cats);
             for (i = 0; i < cats.length; i++) {
-                console.log(cats[i]);
-                var menuHTML = '<span class="menu-link" id="' +
-                    i + '"><a href="#">' + cats[i].name + '</a><br><br></span>';
+                var menuHTML = '<li id="' +
+                    i + '"><a href="#">' + cats[i].name + '</a><br><br></li>';
                 
                 $('#navigation').append(menuHTML);
                 
                 // Put the event listener on the menu links to select
                 // desired cat. Using .call() because we need to pass an argument to the select function
                 $('#' + i).click(function() {
-                    console.log(Number(this.id));
-                    console.log(cats[Number(this.id)]);
                     octopus.select.call(octopus, cats[Number(this.id)]);
                 });
             }
         }
-    }                                             
+    },
+    
+    admin: {
+        
+        selectedCat: '',
+        
+        // Consider whether these var definitions inside the function are not 
+        // what we want. Maybe we need to access these things later? We could
+        // make them properties of view.admin.init, or we could define or declare
+        // them elsewhere in view. 
+        init: function() {
+            var adminButton = document.createElement('button');
+            adminButton.textContent = 'Admin';
+            $('#admin').append(adminButton);
+            var adminPanel = document.createElement('form');
+            $(adminPanel).css('class', 'panel');
+            $('#admin').append(adminPanel);
+            var formElement = document.createElement('form');
+            formElement.method = 'POST';
+            var labels = document.createElement('div');
+            $(labels).css('class', 'labels');
+            var inputs = document.createElement('input');
+            $(inputs).css('class', 'inputs');
+            $(adminPanel).append(labels);
+            var nameLabel = '<label for="name">Name</label>',
+                nameField = '<input type="text" id="name-input" value=' + octopus.currentCat.name + ' name="name-input">',
+                picLabel = '<label for="pic-input">Picture URL</label>',
+                picField = '<input type="text" value=' + octopus.currentCat.pic + ' id="pic-input" name="pic-input">',
+                countLabel = '<label for="count-input">Count</label>',
+                countField = '<input type="text" id="count-input" value=' + octopus.currentCat.count + ' name="count-input">',
+                saveButton = '<input type="submit" value="Save">';
+            $(adminPanel).append(nameLabel + nameField + picLabel + picField + countLabel + countField + saveButton);
+            $(saveButton).click(octopus.alterCat);
+          
+            
+            // Show the panel ...
+            $(adminButton).click(function() {
+                // ... with code here
+                octopus.toggleAdmin();
+                
+            })
+        },
+    
+    toggleAdminView: function(){
+         
+        $('form').toggle();
+              
+    },
+    
+    }
+    
 };
                                              
 octopus.init();                                      
