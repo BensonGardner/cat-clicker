@@ -5,6 +5,48 @@ body {
     justify-content: space-between;
 }
 
+#admin {
+    margin-top: 35px auto auto;
+    padding-top: 50px;
+}
+
+button {
+    background-color: crimson;
+    color: lightgrey;
+    font-size: .9em;
+}
+
+form {
+    border-radius: 5px;
+    background-color: #eef;
+    padding: 20px;  
+/*    visibility: hidden; */
+    display: none;
+}
+
+.labels {
+    float: left;
+    width: 25%;
+    margin-top: 6px;
+}
+
+.input   {
+    float: left;
+    width: 75%;
+    margin-top: 6px;
+}
+
+input[type=text], select, textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    resize: vertical;
+}
+
+input {
+        
+}
+
 .cat-pic {
     display: block;
     width: auto;
@@ -18,19 +60,21 @@ body {
     color: inherit;
 }
 
-#navigation {
-    /*flex: 2 1 125px;*/
+.sidebar {
     width: 125px;
     z-index: 1;
     left: 0;
     height: auto;
-    background-color: #EEF;
-    color: crimson;
     position: fixed;
     overflow-x: hidden;
+    padding: 0 10 0;
+}
+
+#navigation {
+    background-color: #EEF;
+    color: crimson;
     font-size: 14px;
     font-weight: bold;
-    padding: 0 10 0;
 }
 
 #navigation a {
@@ -40,9 +84,16 @@ body {
 }
 
 li {
-    margin: auto;
-    padding: 0 auto;
+    margin: auto 0;
+    padding: 0;
     list-style-type: none;
+}
+
+.panel {
+    background-color: lightgrey;
+    color: crimson;
+    width: 100%;
+    display: hidden;
 }
 
 #clickZone {
@@ -74,5 +125,11 @@ h1 {
 
 div {
     display: block;
- /*   clear: both: */
+}
+
+ul {
+    padding-bottom: 25px;
+    display: block;
+    padding: 10px 10px 0;
+    margin: auto;
 }
