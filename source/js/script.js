@@ -24,6 +24,7 @@ var data = {
         }
     ],
     
+    // Reflect whether the Admin panel is showing.
     adminShow : false
 }
 
@@ -31,8 +32,6 @@ var data = {
 // This is our "octopus"/controller/whatever.
 var octopus = {
 		
-    currentCat: '',  
-  
     // octopus.init() sets everything up. It adds a 
     // count property to each of the cats in the data array,
     // and then sends the data model to the view object to 
@@ -47,10 +46,14 @@ var octopus = {
         view.admin.init();
     },
 
-    // octopus.select(cat) is called by the view when a cat
-    // is selected. Octopus.select(cat) sets currentCat 
-    // to that piece of the data model which was selected 
-    // in the view, then tags the view object to update 
+    // This value tracks which cat featured in the 
+    // main part of the screen.
+    currentCat: '',  
+    
+    // The octopus.select(cat) function is called by 
+    // the view when a cat is selected. 
+    // It sets currentCat to the correct piece of the data 
+    // model, then tags the view object to update 
     // the main display.
     select: function(catIndex) {
         octopus.currentCat = data.cats[catIndex];
@@ -60,39 +63,34 @@ var octopus = {
     
     // Increase count for the selected cat if clicked.
     // incrementClicks() is called by an event listener
-    // which is inserted by the view. Make the circle
-    // for the clicking show up.
+    // which is inserted by the view. It makes the circle
+    // for the clicking show up once the click count is 
+    // at least 1.
     incrementClicks: function() {
         octopus.currentCat.count++;
         view.featured.displayNewCount();
     },
     
+    // toggleAdmin() is called by the event listener on 
+    // the Admin button. This function sets the
+    // data.adminShow property to reflect whether 
+    // it's showing, and calls 
+    // view.admin.toggleAdminView() to alter the display.
     toggleAdmin: function() {
         data.adminShow = !data.adminShow;
         view.admin.toggleAdminView();
-        if (data.adminShow = true) {
-            // update the form values. 
-            // Another way to handle this...
-            // Have this call a separate octopus function that
-            // sends the current cat data to the view 
-            // for rerendering the form. or just 
-            // changing the values. 
-            // pAss it a cat object, then update each 
-            // value in turn.
-            
-            // Or, instead o fcalling tha there, jus thave it happen 
-            // every single time you choose a cat.
-        }
     },
         
-    alterCat: function() {
-        // This function is called by the view (form)
-        // when Save is clicked. It takes data from the form
-        // into the octopus, then takes that same data in the 
-        // octopus and pushes it into the data model. It uses
-        // the currentCat.id to figure out which part of the 
-        // cats.data array to alter.
+    // The alterCat() function is called by the 
+    // form (part of the view object) when the Save button 
+    // is clicked. 
+    // It brings the data entered into the form into 
+    // the octopus, then pushes that same data from 
+    // the octopus into the data model, using the 
+    // currentCat.id variable to figure out which part of the 
+    // cats.data array in the model to alter.
         
+    alterCat: function() {        
         var inputForm = $('#adminPanelForm'),
             inputFormData = inputForm[0];
         octopus.currentCat.name = inputFormData[0].value;
@@ -108,10 +106,10 @@ var octopus = {
 
 var view = {
 
-// featured is the main area of the website
+    // featured is the main area of the website
     featured : {
  
-        // featured.display is called
+        // featured.display is called by octopus.select(cat)
         // to display a particular cat's 
         // name, pic, and click count.
         display: function(cat) {
@@ -165,10 +163,15 @@ var view = {
         
         selectedCat: '',
         
-        // Consider whether these var definitions inside the function are not 
-        // what we want. Maybe we need to access these things later? We could
-        // make them properties of view.admin.init, or we could define or declare
-        // them elsewhere in view. 
+        // admin.init shoves the admin stuff into the 
+        // DOM
+
+        // This is hard to read, and if I had time and
+        // reason to improve it, the obvious next step 
+        // would be to make the adminPanel into one
+        // long HTML string that we append to the
+        // DOM all at once. 
+        
         init: function() {
             var adminButton = document.createElement('button');
             adminButton.textContent = 'Admin';
@@ -189,20 +192,28 @@ var view = {
                 picField = '<input type="text" value=' + octopus.currentCat.pic + ' id="pic-input" name="pic-input">',
                 countLabel = '<label for="count-input">Count</label>',
                 countField = '<input type="text" id="count-input" value=' + octopus.currentCat.count + ' name="count-input">',
-                saveButton = '<button id="saveButton" type="button" name="save-button">Save</button>';
-            $(adminPanel).append(nameLabel + nameField + picLabel + picField + countLabel + countField + saveButton);
-            console.log(saveButton);
-            $('#saveButton').click(octopus.alterCat);
-          
+                saveButton = '<button id="saveButton" type="button" name="save-button">Save</button>',
+                cancelButton = '<button id="cancelButton" type="reset" name="cancel-button">Cancel</button>';
+            $(adminPanel).append(nameLabel + nameField + picLabel + picField + countLabel + countField + saveButton + cancelButton);
             
-            // Show the panel ...
+            $('#saveButton').click(octopus.alterCat);
+            $('#cancelButton').click(octopus.toggleAdmin);
+            
+            // Toggle the display of the adminPanel
+            // When the Admin button is pressed, 
+            // call the octopus's toggleAdmin function
+            // to do the needed work.
             $(adminButton).click(function() {
-                // ... with code here
-                octopus.toggleAdmin();
-                
+                octopus.toggleAdmin();                
             })
         },
     
+        
+    // One of the things that octopus.toggleAdmin()
+    // does, after being called by the Admin button's
+    // event listener, is call the following function 
+    // which does the work of toggling the display property 
+    // of the Admin form. 
     toggleAdminView: function(){
          
         $('form').toggle();
