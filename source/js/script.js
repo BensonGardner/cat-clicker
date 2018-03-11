@@ -99,6 +99,7 @@ var octopus = {
         data.cats[octopus.currentCat.id] = octopus.currentCat;
         view.featured.display(octopus.currentCat);
         octopus.toggleAdmin();
+        view.menu.render(data.cats);
     }
     
 };
@@ -144,6 +145,13 @@ var view = {
     menu: {
         
         init: function(cats) {
+            view.menu.render(cats);
+        },
+
+        render: function(cats) {
+            
+            $('#navigation').empty();
+            
             for (i = 0; i < cats.length; i++) {
                 var menuHTML = '<li id="' +
                     i + '"><a href="#">' + cats[i].name + '</a><br><br></li>';
